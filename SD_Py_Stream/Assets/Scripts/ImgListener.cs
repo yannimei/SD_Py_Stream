@@ -18,12 +18,18 @@ public class ImgListener : MonoBehaviour
 
     void Start()
     {
+        StartThread();
+    }
+
+    void StartThread()
+    {
         // Receive on a separate thread so Unity doesn't freeze waiting for data
         ThreadStart ts = new ThreadStart(GetData);
         thread = new Thread(ts);
         thread.Start();
     }
 
+    // Configure and control the server
     void GetData()
     {
         // Create the server
@@ -49,34 +55,38 @@ public class ImgListener : MonoBehaviour
         // Read data from the network stream
         NetworkStream nwStream = client.GetStream();
 
-        //create an array for recieved data
-        byte[] buffer = new byte[client.ReceiveBufferSize];
-        //byte[] buffer = new byte[99999];
+        // read file size
+        byte[] header = new byte[1024];
+        nwStream.Read(header, 0, header.Length);
+        int fileSize = Int32.Parse(Encoding.Default.GetString(header));
+        Debug.Log("file size: "+ fileSize);
+
+        //create an array for recieved data based on file size
+        byte[] buffer = new byte[fileSize];
 
         //read the data, and caculate how many bite being read
         int bytesRead = nwStream.Read(buffer, 0, buffer.Length);
-        Debug.Log(bytesRead);
+        Debug.Log("bytes read:  "+ bytesRead);
 
         // Decode the bytes into a string
         string dataReceived = Encoding.UTF8.GetString(buffer, 0, bytesRead);
-        Debug.Log(dataReceived);
+        Debug.Log("Data recieved:  "+ dataReceived);
 
-        // dataReceived.Trim();
-        // Decode Base64 and display the image (you may need to adjust this part)
+        // transform Base64string into bytes
         byte[] imageBytes = Convert.FromBase64String(dataReceived);
 
         // Make sure we're not getting an empty string
         //dataReceived.Trim();
+
         //if (dataReceived != null && dataReceived != "")
         if (buffer != null)
         {
-            // Convert the received string of data to the format we are using
-            //position = ParseData(dataReceived);
-            Debug.Log("get material data");
-
+            
             UnityMainThreadDispatcher.Instance().Enqueue(DisplayImage(imageBytes));
 
             nwStream.Write(buffer, 0, bytesRead);
+
+            Debug.Log("get material data");
         }
     }
 
@@ -101,9 +111,6 @@ public class ImgListener : MonoBehaviour
 
     void Update()
     {
-        // Set this object's position in the scene according to the position received
-        //transform.position = position;
-
         this.GetComponent<Renderer>().material = generatedMaterial;
     }
 }
