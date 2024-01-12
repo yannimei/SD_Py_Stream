@@ -111,6 +111,9 @@ public class ImgListener : MonoBehaviour
 
     void Update()
     {
-        this.GetComponent<Renderer>().material = generatedMaterial;
+        if (generatedMaterial != null)
+        {
+            this.GetComponent<Renderer>().material = generatedMaterial;
+        }
     }
 }

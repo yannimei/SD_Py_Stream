@@ -86,6 +86,8 @@ public class ImgListenerInDataChunk : MonoBehaviour
             ms.Write(data.Take(increment).ToArray(), 0, increment);
         }
         Debug.Log("loop done");
+        
+        
         byte[] buffer = ms.ToArray();
         int bytesRead = buffer.Length;
 
@@ -97,24 +99,17 @@ public class ImgListenerInDataChunk : MonoBehaviour
         // transform Base64string into bytes
         byte[] imageBytes = Convert.FromBase64String(dataReceived);
 
-
-
-
         // Make sure we're not getting an empty string
         //dataReceived.Trim();
 
         //if (dataReceived != null && dataReceived != "")
         if (buffer != null)
         {
-
             UnityMainThreadDispatcher.Instance().Enqueue(DisplayImage(imageBytes));
-
             nwStream.Write(buffer, 0, bytesRead);
-
             Debug.Log("get material data");
         }
     }
-
 
     Material generatedMaterial;
 
@@ -136,7 +131,11 @@ public class ImgListenerInDataChunk : MonoBehaviour
 
     void Update()
     {
-        this.GetComponent<Renderer>().material = generatedMaterial;
+        if (generatedMaterial != null)
+        {
+            this.GetComponent<Renderer>().material = generatedMaterial;
+        }
+        
     }
 }
 
