@@ -94,7 +94,7 @@ public class ImgListenerInDataChunk : MonoBehaviour
 
         // Decode the bytes into a string
         string dataReceived = Encoding.UTF8.GetString(buffer, 0, bytesRead);
-        Debug.Log("Data recieved:  " + dataReceived);
+        //Debug.Log("Data recieved:  " + dataReceived);
 
         // transform Base64string into bytes
         byte[] imageBytes = Convert.FromBase64String(dataReceived);
