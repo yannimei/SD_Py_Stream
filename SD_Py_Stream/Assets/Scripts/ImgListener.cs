@@ -41,12 +41,13 @@ public class ImgListener : MonoBehaviour
         Debug.Log("connected");
 
         // Start listening
-        running = true;
-        while (running)
-        {
-            Connection();
-        }
-        
+        //running = true;
+        //while (running)
+        //{
+        //    Connection();
+        //}
+        //remove runnig temporarily
+        Connection();
         server.Stop();
     }
 
