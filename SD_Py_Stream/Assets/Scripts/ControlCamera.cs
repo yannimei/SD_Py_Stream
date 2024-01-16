@@ -10,11 +10,11 @@ public class ControlCamera : MonoBehaviour
     public int resHeight = 512;
     public Camera mainCamera;
     public RenderTexture originalRT;
-    // Check for user input, for example, you can use a key press or mouse scroll wheel
     public float newFieldOfView;
-    // Start is called before the first frame update
-
     private bool takeShot = false;
+
+    public ImgBytesSenderFromUnity2Py imgByteSender;
+
     void Start()
     {
         newFieldOfView = mainCamera.fieldOfView;
@@ -52,7 +52,12 @@ public class ControlCamera : MonoBehaviour
             RenderTexture.active = originalRT;
             Destroy(rt);
 
+            //the bytes of the image file
             byte[] imgBytes = screenShot.EncodeToPNG();
+
+            //stream the data
+            SendImage(imgBytes);
+
             string fileName = ScreenShotName(resWidth, resHeight);
             System.IO.File.WriteAllBytes(fileName, imgBytes);
             Debug.Log(string.Format("take screenshot to: {0}", fileName));
@@ -92,6 +97,18 @@ public class ControlCamera : MonoBehaviour
         }
     }
 
+
+    public void SendImage(byte[] data)
+    {
+        // Access imageData from ControlCamera or wherever it's generated
+    
+
+        // Set imageData in ImgBytesSenderFromUnity2Py
+        imgByteSender.imageData = data;
+
+        // Trigger the data sending process
+        imgByteSender.StartThread();
+    }
 
 
 }
