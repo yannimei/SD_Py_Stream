@@ -121,7 +121,7 @@ public class ImgListenerInDataChunk : MonoBehaviour
         texture.LoadImage(imageData);
 
         // Create a new material with the texture
-        Material material = new Material(Shader.Find("Standard"));
+        Material material = new Material(Shader.Find("Unlit/Texture"));
         material.mainTexture = texture;
 
         generatedMaterial = material;
